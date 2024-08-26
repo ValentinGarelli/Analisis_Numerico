@@ -8,13 +8,16 @@ void menu_raices()
   int opcion;
   raices r;
   string funcion;
-  cout << "Ingrese la funcion: " << endl;
-  cin >> funcion;
+  // cout << "Ingrese la funcion: " << endl;
+  // cin >> funcion;
+  funcion = "(e^(-x)- x)";
   r.setFuncion(funcion);
   do
   {
     cout << "Ingrese una opcion: " << endl;
     cout << "1. Metodo de la biseccion" << endl;
+    cout << "2. Metodo de punto fijo" << endl;
+    cout << "3. Metodo de Newton-Raphson" << endl;
     cout << "0. Salir" << endl;
     cin >> opcion;
     switch (opcion)
@@ -22,7 +25,12 @@ void menu_raices()
     case 1:
       r.metodo_biseccion();
       break;
-
+    case 2:
+      r.metodo_de_punto_fijo();
+      break;
+    case 3:
+      r.metodo_newton_raphson();
+      break;
     default:
       break;
     }

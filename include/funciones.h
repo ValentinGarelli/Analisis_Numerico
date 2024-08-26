@@ -8,4 +8,6 @@ using namespace std;
 
 double expresion(const string funcion, double x);
 
+double derivada(const string funcion, double x);
+
 #endif

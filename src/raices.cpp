@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "../include/funciones.h"
 #include "../include/raices.h"
 using namespace std;
@@ -67,4 +68,51 @@ void raices::metodo_biseccion()
 
 void raices::metodo_de_punto_fijo()
 {
+  string g;
+  double x, error, v_ant, a, b, epsilon;
+
+  cout << "Ingrese la funcion g(x): ";
+  cin.ignore();
+  getline(cin, g);
+  cout << "Ingrese el valor de a: ";
+  cin >> a;
+  cout << "Ingrese el valor de b: ";
+  cin >> b;
+  cout << "Ingrese el valor de epsilon (numero que maximiza la funcion entre a y b): ";
+  cin >> epsilon;
+  cout << "ingrese el error maximo: ";
+  cin >> error;
+
+  if ((expresion(g, a) < a || expresion(g, a) > b) || (expresion(g, b) < a || expresion(g, b) > b))
+  {
+    cout << "La funcion no converge" << endl;
+  }
+  else if (abs(derivada(g, epsilon)) > 1)
+  {
+    cout << "La funcion no converge" << endl;
+  }
+  else
+  {
+    do
+    {
+      v_ant = x;
+      x = expresion(g, x);
+    } while (abs(x - v_ant) > error);
+  }
+  cout << "La raiz es: " << x << endl;
+}
+
+void raices::metodo_newton_raphson()
+{
+  double x, error, v_ant;
+  cout << "Ingrese el valor de x: ";
+  cin >> x;
+  cout << "Ingrese el valor del error: ";
+  cin >> error;
+  do
+  {
+    v_ant = x;
+    x = x - (expresion(funcion, x) / derivada(funcion, x));
+  } while (abs(x - v_ant) > error);
+  cout << "La raiz es: " << x << endl;
 }

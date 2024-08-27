@@ -18,6 +18,7 @@ public:
   void metodo_biseccion();
   void metodo_de_punto_fijo();
   void metodo_newton_raphson();
+  void metodo_secante();
 };
 
 #endif

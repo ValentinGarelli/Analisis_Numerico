@@ -116,3 +116,24 @@ void raices::metodo_newton_raphson()
   } while (abs(x - v_ant) > error);
   cout << "La raiz es: " << x << endl;
 }
+
+void raices::metodo_secante()
+{
+  double error, x_i, x_mas_uno, x_menos_uno;
+  cout << "Ingrese el valor de x_i: ";
+  cin >> x_i;
+  cout << "Ingrese el valor de x_i+1: ";
+  cin >> x_mas_uno;
+  cout << "Ingrese el valor del error: ";
+  cin >> error;
+
+  x_menos_uno = 0;
+  do
+  {
+    x_mas_uno = x_i - (expresion(funcion, x_i) * (x_menos_uno - x_i)) / (expresion(funcion, x_menos_uno) - expresion(funcion, x_i));
+    x_menos_uno = x_i;
+    x_i = x_mas_uno;
+  } while (abs(x_mas_uno - x_menos_uno) > error);
+
+  cout << "La raiz es: " << x_mas_uno << endl;
+}

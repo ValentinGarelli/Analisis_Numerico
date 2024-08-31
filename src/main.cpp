@@ -1,6 +1,7 @@
 #include <iostream>
 #include "../include/raices.h"
 #include "../include/funciones.h"
+#include "../include/matrices.h"
 using namespace std;
 
 void menu_raices()
@@ -41,6 +42,38 @@ void menu_raices()
   } while (opcion != 0);
 }
 
+void menu_matrices()
+{
+  int opcion, filas, columnas;
+  matrices m;
+  cout << "Ingrese el numero de filas: ";
+  cin >> filas;
+  cout << "Ingrese el numero de columnas: ";
+  cin >> columnas;
+  m.setFilas(filas);
+  m.setColumnas(columnas);
+  m.cargarMatriz();
+  m.mostrarMatriz();
+  do
+  {
+    cout << "Ingrese una opcion: " << endl;
+    cout << "1. Metodo de eliminacion gaussiana" << endl;
+    cout << "0. Salir" << endl;
+    cin >> opcion;
+    switch (opcion)
+    {
+    case 1:
+      m.eliminacion_gaussiana();
+      m.mostrarMatriz();
+      m.mostrarResultados();
+      break;
+
+    default:
+      break;
+    }
+  } while (opcion != 0);
+}
+
 int main()
 {
   int opcion;
@@ -48,6 +81,7 @@ int main()
   {
     cout << "Ingrese una opcion: " << endl;
     cout << "1. Raices de una funcion" << endl;
+    cout << "2. Operaciones con matrices" << endl;
     cout << "0. Salir" << endl;
     cin >> opcion;
     switch (opcion)
@@ -57,8 +91,17 @@ int main()
       menu_raices();
       break;
     }
+    case 2:
+    {
+      menu_matrices();
+      break;
     }
 
+    default:
+    {
+      break;
+    }
+    }
   } while (opcion != 0);
 
   return 0;

@@ -152,6 +152,34 @@ void matrices::mostrarResultados()
   }
 }
 
+void matrices::gauss_seidel()
+{
+  double error, suma;
+  vector<double> x, x_ant;
+  x = vector<double>(filas, 1);
+  x_ant = vector<double>(filas, 0);
+  cout << "Ingrese el error: ";
+  cin >> error;
+  do
+  {
+    for (int i = 0; i < filas; i++)
+    {
+      suma = 0;
+      for (int j = 0; j < columnas - 1; j++)
+      {
+        if (j != i)
+        {
+          suma += M[i][j] * x[j];
+        }
+      }
+      x_ant[i] = x[i];
+      x[i] = (M[i][columnas - 1] - suma) / M[i][i];
+    }
+  } while (abs(x[0] - x_ant[0]) > error);
+
+  resultados = x;
+}
+
 matrices::~matrices()
 {
 }

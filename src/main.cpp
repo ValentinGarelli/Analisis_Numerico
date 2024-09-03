@@ -59,6 +59,7 @@ void menu_matrices()
     cout << "Ingrese una opcion: " << endl;
     cout << "1. Metodo de eliminacion gaussiana" << endl;
     cout << "2. Metodo de Gauss-Seidel" << endl;
+    cout << "3. Metodo de LU" << endl;
     cout << "0. Salir" << endl;
     cin >> opcion;
     switch (opcion)
@@ -71,7 +72,10 @@ void menu_matrices()
     case 2:
       m.gauss_seidel();
       m.mostrarResultados();
-
+      break;
+    case 3:
+      m.metodo_de_LU();
+      m.mostrarResultados();
       break;
 
     default:

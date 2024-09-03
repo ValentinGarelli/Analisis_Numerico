@@ -41,6 +41,16 @@ vector<vector<double>> matrices::getMatriz()
   return M;
 }
 
+void matrices::setDato(int f, int c, double d)
+{
+  M[f][c] = d;
+}
+
+double matrices::getDato(int f, int c)
+{
+  return M[f][c];
+}
+
 void matrices::cargarMatriz()
 {
   M = vector<vector<double>>(filas, vector<double>(columnas));
@@ -54,9 +64,15 @@ void matrices::cargarMatriz()
   }
 }
 
+void matrices::copiarMatriz(matrices &m)
+{
+  filas = m.getFilas();
+  columnas = m.getColumnas();
+  M = m.getMatriz();
+}
+
 void matrices::intercambiar_filas(int fila1, int fila2)
 {
-  cout << "Intercambiando filas " << fila1 + 1 << " y " << fila2 + 1 << endl;
   vector<double> aux = M[fila1];
   M[fila1] = M[fila2];
   M[fila2] = aux;
@@ -64,7 +80,6 @@ void matrices::intercambiar_filas(int fila1, int fila2)
 
 void matrices::multiplicar_fila(int fila, double escalar)
 {
-  cout << "Multiplicando la fila " << fila + 1 << " por " << escalar << endl;
   for (int i = 0; i < M[fila].size(); i++)
   {
     M[fila][i] *= escalar;
@@ -73,7 +88,6 @@ void matrices::multiplicar_fila(int fila, double escalar)
 
 void matrices::sumar_filas(int fila1, int fila2, double escalar)
 {
-  cout << "Sumando la fila " << fila2 + 1 << " multiplicada por " << escalar << " a la fila " << fila1 + 1 << endl;
   for (int i = 0; i < M[fila1].size(); i++)
   {
     M[fila1][i] += M[fila2][i] * escalar;
@@ -111,14 +125,64 @@ void matrices::triangulacion_superior()
   }
 }
 
+void matrices::triangulacion_inferior()
+{
+  for (int i = 0; i < filas; i++)
+  {
+    for (int j = 0; j < columnas - 1; j++)
+    {
+      if (i == j)
+      {
+        if (M[i][j] == 0)
+        {
+          for (int k = i + 1; k < filas; k++)
+          {
+            if (M[k][j] != 0)
+            {
+              intercambiar_filas(i, k);
+              break;
+            }
+          }
+        }
+        else
+        {
+          multiplicar_fila(i, 1 / M[i][j]);
+        }
+      }
+      else if (i < j)
+      {
+        if (M[i][j] != 0)
+        {
+          sumar_filas(i, j, -(M[i][j] / M[j][j]));
+        }
+      }
+    }
+  }
+}
+
 void matrices::sustitucion_regresiva()
 {
-  resultados = vector<double>(filas, 1);
+  resultados = vector<double>(filas);
 
   for (int i = filas - 1; i >= 0; i--)
   {
     double suma = 0;
     for (int j = columnas - 2; j > i; j--)
+    {
+      suma += M[i][j] * resultados[j];
+    }
+    resultados[i] = (M[i][columnas - 1] - suma) / M[i][i];
+  }
+}
+
+void matrices::sustitucion_progresiva()
+{
+  resultados = vector<double>(filas, 1);
+
+  for (int i = 0; i < filas; i++)
+  {
+    double suma = 0;
+    for (int j = 0; j < i; j++)
     {
       suma += M[i][j] * resultados[j];
     }
@@ -138,7 +202,7 @@ void matrices::mostrarMatriz()
   {
     for (int j = 0; j < M[i].size(); j++)
     {
-      cout << M[i][j] << " ";
+      cout << M[i][j] << "\t";
     }
     cout << endl;
   }
@@ -175,9 +239,64 @@ void matrices::gauss_seidel()
       x_ant[i] = x[i];
       x[i] = (M[i][columnas - 1] - suma) / M[i][i];
     }
-  } while (abs(x[0] - x_ant[0]) > error);
+  } while (calculo_error(x, x_ant, error));
 
   resultados = x;
+}
+
+bool matrices::calculo_error(vector<double> x, vector<double> x_ant, double error)
+{
+  for (int i = 0; i < x.size(); i++)
+  {
+    if (abs(x[i] - x_ant[i]) > error)
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+void matrices::metodo_de_LU()
+{
+  matrices L, U;
+  vector<double> y;
+  y = vector<double>(filas);
+  L.setFilas(filas);
+  L.setColumnas(columnas);
+  U.setFilas(filas);
+  U.setColumnas(columnas);
+  L.setMatriz(M);
+  U.setMatriz(M);
+
+  for (size_t i = 0; i < filas; i++)
+  {
+    y[i] = L.getDato(i, columnas - 1);
+  }
+  L.triangulacion_inferior();
+  for (size_t i = 0; i < filas; i++)
+  {
+    L.setDato(i, columnas - 1, y[i]);
+  }
+
+  cout << "Matriz L" << endl;
+  L.mostrarMatriz();
+  U.triangulacion_superior();
+  cout << "Matriz U" << endl;
+  U.mostrarMatriz();
+  L.sustitucion_progresiva();
+
+  cout << "Resultados de L" << endl;
+  L.mostrarResultados();
+
+  for (size_t i = 0; i < filas; i++)
+  {
+    U.setDato(i, columnas - 1, y[i]);
+  }
+  cout << "Matriz U con resultados de L" << endl;
+  U.mostrarMatriz();
+
+  U.sustitucion_regresiva();
+  resultados = U.resultados;
 }
 
 matrices::~matrices()

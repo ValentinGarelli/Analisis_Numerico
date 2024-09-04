@@ -45,17 +45,19 @@ void menu_raices()
 void menu_matrices()
 {
   int opcion, filas, columnas;
-  matrices m;
+  matrices matriz, matriz_aux;
   cout << "Ingrese el numero de filas: ";
   cin >> filas;
   cout << "Ingrese el numero de columnas: ";
   cin >> columnas;
-  m.setFilas(filas);
-  m.setColumnas(columnas);
-  m.cargarMatriz();
-  m.mostrarMatriz();
+  matriz.setFilas(filas);
+  matriz.setColumnas(columnas);
+  matriz.cargarMatriz();
+  matriz.mostrarMatriz();
+
   do
   {
+    matriz_aux.copiarMatriz(matriz);
     cout << "Ingrese una opcion: " << endl;
     cout << "1. Metodo de eliminacion gaussiana" << endl;
     cout << "2. Metodo de Gauss-Seidel" << endl;
@@ -65,17 +67,17 @@ void menu_matrices()
     switch (opcion)
     {
     case 1:
-      m.eliminacion_gaussiana();
-      m.mostrarMatriz();
-      m.mostrarResultados();
+      matriz_aux.eliminacion_gaussiana();
+      matriz_aux.mostrarMatriz();
+      matriz_aux.mostrarResultados();
       break;
     case 2:
-      m.gauss_seidel();
-      m.mostrarResultados();
+      matriz_aux.gauss_seidel();
+      matriz_aux.mostrarResultados();
       break;
     case 3:
-      m.metodo_de_LU();
-      m.mostrarResultados();
+      matriz_aux.metodo_de_LU();
+      matriz_aux.mostrarResultados();
       break;
 
     default:

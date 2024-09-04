@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+
 #include "../include/matrices.h"
 using namespace std;
 
@@ -71,6 +72,11 @@ void matrices::copiarMatriz(matrices &m)
   M = m.getMatriz();
 }
 
+vector<double> matrices::getResultados()
+{
+  return resultados;
+}
+
 void matrices::intercambiar_filas(int fila1, int fila2)
 {
   vector<double> aux = M[fila1];
@@ -96,29 +102,21 @@ void matrices::sumar_filas(int fila1, int fila2, double escalar)
 
 void matrices::triangulacion_superior()
 {
-  for (int i = 0; i < filas; i++)
+  const double epsilon = 1e-10;
+
+  for (size_t iteraciones = 0; iteraciones < 100; iteraciones++)
   {
-    for (int j = 0; j < columnas; j++)
+    for (int i = 0; i < filas; i++)
     {
-      if (i == j)
+      for (int j = 0; j < columnas; j++)
       {
-        if (M[i][j] == 0)
+
+        if (i > j)
         {
-          for (int k = i + 1; k < filas; k++)
+          if (abs(M[i][j]) >= epsilon)
           {
-            if (M[k][j] != 0)
-            {
-              intercambiar_filas(i, k);
-              break;
-            }
+            sumar_filas(i, j, -(M[i][j] / M[j][j]));
           }
-        }
-      }
-      else if (i > j)
-      {
-        if (M[i][j] != 0)
-        {
-          sumar_filas(i, j, -(M[i][j] / M[j][j]));
         }
       }
     }
@@ -127,33 +125,21 @@ void matrices::triangulacion_superior()
 
 void matrices::triangulacion_inferior()
 {
-  for (int i = 0; i < filas; i++)
+  const double epsilon = 1e-10;
+
+  for (size_t iteraciones = 0; iteraciones < 100; iteraciones++)
   {
-    for (int j = 0; j < columnas - 1; j++)
+    for (int i = 0; i < filas; i++)
     {
-      if (i == j)
+      for (int j = 0; j < columnas; j++)
       {
-        if (M[i][j] == 0)
+
+        if (i < j)
         {
-          for (int k = i + 1; k < filas; k++)
+          if (abs(M[i][j]) >= epsilon)
           {
-            if (M[k][j] != 0)
-            {
-              intercambiar_filas(i, k);
-              break;
-            }
+            sumar_filas(i, j, -(M[i][j] / M[j][j]));
           }
-        }
-        else
-        {
-          multiplicar_fila(i, 1 / M[i][j]);
-        }
-      }
-      else if (i < j)
-      {
-        if (M[i][j] != 0)
-        {
-          sumar_filas(i, j, -(M[i][j] / M[j][j]));
         }
       }
     }
@@ -258,45 +244,80 @@ bool matrices::calculo_error(vector<double> x, vector<double> x_ant, double erro
 
 void matrices::metodo_de_LU()
 {
-  matrices L, U;
-  vector<double> y;
-  y = vector<double>(filas);
-  L.setFilas(filas);
-  L.setColumnas(columnas);
-  U.setFilas(filas);
-  U.setColumnas(columnas);
-  L.setMatriz(M);
-  U.setMatriz(M);
+  vector<vector<double>> L, U;
+  vector<double> x, y;
+  L = vector<vector<double>>(filas, vector<double>(columnas, 0));
+  U = vector<vector<double>>(filas, vector<double>(columnas, 0));
+  x = vector<double>(filas, 0);
+  y = vector<double>(filas, 0);
 
-  for (size_t i = 0; i < filas; i++)
+  for (int i = 0; i < filas; i++)
   {
-    y[i] = L.getDato(i, columnas - 1);
-  }
-  L.triangulacion_inferior();
-  for (size_t i = 0; i < filas; i++)
-  {
-    L.setDato(i, columnas - 1, y[i]);
+    L[i][i] = 1;
   }
 
-  cout << "Matriz L" << endl;
-  L.mostrarMatriz();
-  U.triangulacion_superior();
-  cout << "Matriz U" << endl;
-  U.mostrarMatriz();
-  L.sustitucion_progresiva();
-
-  cout << "Resultados de L" << endl;
-  L.mostrarResultados();
-
-  for (size_t i = 0; i < filas; i++)
+  for (int i = 0; i < filas; i++)
   {
-    U.setDato(i, columnas - 1, y[i]);
-  }
-  cout << "Matriz U con resultados de L" << endl;
-  U.mostrarMatriz();
+    for (int j = 0; j < columnas; j++)
+    {
+      double suma = 0;
 
-  U.sustitucion_regresiva();
-  resultados = U.resultados;
+      for (int k = 0; k < i; k++)
+      {
+        suma += L[i][k] * U[k][j];
+      }
+    }
+
+    for (int j = i; j < columnas; j++)
+    {
+      double suma = 0;
+
+      for (int k = 0; k < i; k++)
+      {
+        suma += L[i][k] * U[k][j];
+      }
+
+      U[i][j] = M[i][j] - suma;
+    }
+
+    for (int j = i + 1; j < filas; j++)
+    {
+      double suma = 0;
+
+      for (int k = 0; k < i; k++)
+      {
+        suma += L[j][k] * U[k][i];
+      }
+
+      L[j][i] = (M[j][i] - suma) / U[i][i];
+    }
+  }
+
+  for (int i = 0; i < filas; i++)
+  {
+    double suma = 0;
+
+    for (int j = 0; j < i; j++)
+    {
+      suma += L[i][j] * y[j];
+    }
+
+    y[i] = (M[i][columnas - 1] - suma) / L[i][i];
+  }
+
+  for (int i = filas - 1; i >= 0; i--)
+  {
+    double suma = 0;
+
+    for (int j = columnas - 2; j > i; j--)
+    {
+      suma += U[i][j] * x[j];
+    }
+
+    x[i] = (y[i] - suma) / U[i][i];
+  }
+
+  resultados = x;
 }
 
 matrices::~matrices()

@@ -31,6 +31,7 @@ public:
   double getDato(int f, int c);
   void setMatriz(vector<vector<double>> m);
   vector<vector<double>> getMatriz();
+  vector<double> getResultados();
   void cargarMatriz();
   void mostrarMatriz();
   void mostrarResultados();

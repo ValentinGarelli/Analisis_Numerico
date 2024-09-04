@@ -62,6 +62,7 @@ void menu_matrices()
     cout << "1. Metodo de eliminacion gaussiana" << endl;
     cout << "2. Metodo de Gauss-Seidel" << endl;
     cout << "3. Metodo de LU" << endl;
+    cout << "4. Estabilidad de la matriz" << endl;
     cout << "0. Salir" << endl;
     cin >> opcion;
     switch (opcion)
@@ -70,16 +71,22 @@ void menu_matrices()
       matriz_aux.eliminacion_gaussiana();
       matriz_aux.mostrarMatriz();
       matriz_aux.mostrarResultados();
+      matriz.ChequarSolucion(matriz_aux.getResultados());
       break;
     case 2:
       matriz_aux.gauss_seidel();
       matriz_aux.mostrarResultados();
+      matriz.ChequarSolucion(matriz_aux.getResultados());
+
       break;
     case 3:
       matriz_aux.metodo_de_LU();
       matriz_aux.mostrarResultados();
+      matriz.ChequarSolucion(matriz_aux.getResultados());
       break;
-
+    case 4:
+      matriz_aux.CondicionDeLaMatriz();
+      break;
     default:
       break;
     }

@@ -19,6 +19,8 @@ private:
   void sustitucion_progresiva();
   bool calculo_error(vector<double> x, vector<double> x_ant, double error);
   void triangulacion_inferior();
+  double normadeMatriz(vector<vector<double>> m);
+  int obtenerExponente(double num);
 
 public:
   matrices();
@@ -39,6 +41,9 @@ public:
   void gauss_seidel();
   void metodo_de_LU();
   void copiarMatriz(matrices &m);
+  void CondicionDeLaMatriz();
+  vector<vector<double>> CalcularInversa();
+  void ChequarSolucion(vector<double> x);
 };
 
 #endif

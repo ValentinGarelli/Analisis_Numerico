@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-
+#include <cmath>
 #include "../include/matrices.h"
 using namespace std;
 
@@ -204,12 +204,12 @@ void matrices::mostrarResultados()
 
 void matrices::gauss_seidel()
 {
-  double error, suma;
+  double error = 1e-7;
+  double suma;
   vector<double> x, x_ant;
   x = vector<double>(filas, 1);
   x_ant = vector<double>(filas, 0);
-  cout << "Ingrese el error: ";
-  cin >> error;
+
   do
   {
     for (int i = 0; i < filas; i++)
@@ -318,6 +318,133 @@ void matrices::metodo_de_LU()
   }
 
   resultados = x;
+}
+
+vector<vector<double>> matrices::CalcularInversa()
+{
+  vector<vector<double>> inversa;
+
+  inversa = vector<vector<double>>(filas, vector<double>(columnas, 0));
+
+  for (int i = 0; i < filas; i++)
+  {
+    for (int j = 0; j < columnas; j++)
+    {
+      if (i == j)
+      {
+        inversa[i][j] = 1;
+      }
+    }
+  }
+
+  for (int i = 0; i < filas; i++)
+  {
+    double pivote = M[i][i];
+    for (int j = 0; j < columnas; j++)
+    {
+      M[i][j] /= pivote;
+      inversa[i][j] /= pivote;
+    }
+
+    for (int j = 0; j < filas; j++)
+    {
+      if (i != j)
+      {
+        double factor = M[j][i];
+        for (int k = 0; k < columnas; k++)
+        {
+          M[j][k] -= factor * M[i][k];
+          inversa[j][k] -= factor * inversa[i][k];
+        }
+      }
+    }
+  }
+
+  for (int i = 0; i < filas; i++)
+  {
+    for (size_t j = 0; j < columnas; j++)
+    {
+      cout << inversa[i][j] << "\t";
+    }
+  }
+
+  return inversa;
+}
+
+double matrices::normadeMatriz(vector<vector<double>> m)
+{
+  double norma = 0;
+  for (size_t i = 0; i < filas; i++)
+  {
+    double suma = 0;
+    for (size_t j = 0; j < columnas - 1; j++)
+    {
+      suma += abs(m[i][j]);
+    }
+    if (suma > norma)
+    {
+      norma = suma;
+    }
+  }
+  return norma;
+}
+
+void matrices::CondicionDeLaMatriz()
+{
+  double error = 1e-7;
+  int t, p;
+  vector<vector<double>> inversa;
+  inversa = CalcularInversa();
+  double normaA = normadeMatriz(M);
+  double normaAInversa = normadeMatriz(inversa);
+  p = normaA * normaAInversa;
+  cout << "La norma de la matriz A es: " << normaA << endl;
+  cout << "La norma de la matriz A inversa es: " << normaAInversa << endl;
+  cout << "El numero de condicion de la matriz es: " << p << endl;
+  t = (obtenerExponente(error) * -1) + 1;
+
+  cout << "el numero de cifras significativas es: " << t - p << endl;
+}
+
+void matrices::ChequarSolucion(vector<double> x)
+{
+  double error = 1e-7;
+  vector<double> b;
+  bool correcto = true;
+
+  b = vector<double>(filas, 0);
+  for (int i = 0; i < filas; i++)
+  {
+    for (int j = 0; j < columnas - 1; j++)
+    {
+      b[i] += M[i][j] * x[j];
+    }
+  }
+
+  for (int i = 0; i < filas; i++)
+  {
+    if (abs(b[i] - M[i][columnas - 1]) > error)
+    {
+      correcto = false;
+      break;
+    }
+  }
+
+  if (correcto)
+  {
+    cout << "La solucion es correcta" << endl;
+  }
+  else
+  {
+    cout << "La solucion no es correcta" << endl;
+  }
+}
+
+int matrices::obtenerExponente(double numero)
+{
+  if (numero == 0)
+    return 0;
+  return static_cast<int>(floor(log10(abs(numero))));
 }
 
 matrices::~matrices()

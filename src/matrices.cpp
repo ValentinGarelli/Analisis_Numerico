@@ -207,8 +207,13 @@ void matrices::gauss_seidel()
   double error = 1e-7;
   double suma;
   vector<double> x, x_ant;
-  x = vector<double>(filas, 1);
+  x = vector<double>(filas, 0);
   x_ant = vector<double>(filas, 0);
+
+  if (!VerificarDiagonalmenteDominante())
+  {
+    hacerDiagonalmenteDominante();
+  }
 
   do
   {
@@ -398,11 +403,11 @@ void matrices::CondicionDeLaMatriz()
   double normaA = normadeMatriz(M);
   double normaAInversa = normadeMatriz(inversa);
   p = normaA * normaAInversa;
+  p = (obtenerExponente(p));
   cout << "La norma de la matriz A es: " << normaA << endl;
   cout << "La norma de la matriz A inversa es: " << normaAInversa << endl;
   cout << "El numero de condicion de la matriz es: " << p << endl;
   t = (obtenerExponente(error) * -1) + 1;
-
   cout << "el numero de cifras significativas es: " << t - p << endl;
 }
 
@@ -438,6 +443,59 @@ void matrices::ChequarSolucion(vector<double> x)
   {
     cout << "La solucion no es correcta" << endl;
   }
+}
+
+bool matrices::VerificarDiagonalmenteDominante()
+{
+  double suma;
+  bool correcto = true;
+
+  for (int i = 0; i < filas; i++)
+  {
+    suma = 0;
+    for (int j = 0; j < columnas - 1; j++)
+    {
+      if (i != j)
+      {
+        suma += abs(M[i][j]);
+      }
+    }
+    if (abs(M[i][i]) <= suma)
+    {
+      correcto = false;
+      break;
+    }
+  }
+
+  return correcto;
+}
+
+void matrices::hacerDiagonalmenteDominante()
+{
+  double mayor;
+  int fila_mayor, vuelta = 0;
+
+  while (vuelta < 100)
+  {
+    for (int i = 0; i < filas; i++)
+    {
+      mayor = abs(M[i][i]);
+      fila_mayor = i;
+      for (int j = i + 1; j < filas; j++)
+      {
+        if (abs(M[j][i]) > mayor)
+        {
+          mayor = abs(M[j][i]);
+          fila_mayor = j;
+        }
+      }
+      if (fila_mayor != i)
+      {
+        intercambiar_filas(i, fila_mayor);
+      }
+    }
+  }
+  vuelta++;
 }
 
 int matrices::obtenerExponente(double numero)

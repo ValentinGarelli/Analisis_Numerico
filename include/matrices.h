@@ -21,6 +21,8 @@ private:
   void triangulacion_inferior();
   double normadeMatriz(vector<vector<double>> m);
   int obtenerExponente(double num);
+  bool VerificarDiagonalmenteDominante();
+  void hacerDiagonalmenteDominante();
 
 public:
   matrices();

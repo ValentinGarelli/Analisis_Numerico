@@ -364,14 +364,16 @@ vector<vector<double>> matrices::CalcularInversa()
       }
     }
   }
-
+  cout << "inversa de la matriz" << endl;
   for (int i = 0; i < filas; i++)
   {
     for (size_t j = 0; j < columnas; j++)
     {
       cout << inversa[i][j] << "\t";
     }
+    cout << endl;
   }
+  cout << endl;
 
   return inversa;
 }

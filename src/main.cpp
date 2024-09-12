@@ -11,7 +11,8 @@ void menu_raices()
   string funcion;
   // cout << "Ingrese la funcion: " << endl;
   // cin >> funcion;
-  funcion = "-0.874*(x^2) + 1.750*x + 2.627";
+  // funcion = "(x+1)/(e^x)";
+  funcion = "2-((x+2)/e^x)";
   r.setFuncion(funcion);
   do
   {

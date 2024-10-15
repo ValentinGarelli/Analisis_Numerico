@@ -256,3 +256,22 @@ void matrices::metodo_de_LU()
     cout << "x" << i + 1 << ": " << x[i] << endl;
   }
 }
+
+void matrices::CondicionDeLaMatriz()
+{
+  double max = 0;
+  double suma;
+  for (int i = 0; i < n; i++)
+  {
+    suma = 0;
+    for (int j = 0; j < n; j++)
+    {
+      suma += abs(matriz[i][j]);
+    }
+    if (suma > max)
+    {
+      max = suma;
+    }
+  }
+  cout << "La condicion de la matriz es: " << max << endl;
+}

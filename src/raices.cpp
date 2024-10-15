@@ -60,7 +60,7 @@ void raices::metodo_biseccion()
       {
         a = c;
       }
-
+      cout << "a: " << a << "\tb: " << b << "\tc: " << c << "\tfc: " << fc << "\tError: " << abs(c - v_ant) << endl;
     } while (abs(c - v_ant) > error);
     cout << "La raiz es: " << c << endl;
   }
@@ -97,6 +97,7 @@ void raices::metodo_de_punto_fijo()
     {
       v_ant = x;
       x = expresion(g, x);
+      cout << "x: " << x << "\tError: " << abs(x - v_ant) << endl;
     } while (abs(x - v_ant) > error);
   }
   cout << "La raiz es: " << x << endl;
@@ -113,6 +114,7 @@ void raices::metodo_newton_raphson()
   {
     v_ant = x;
     x = x - (expresion(funcion, x) / derivada(funcion, x));
+    cout << "x: " << x << "\tError: " << abs(x - v_ant) << endl;
   } while (abs(x - v_ant) > error);
   cout << "La raiz es: " << x << endl;
 }
@@ -133,6 +135,7 @@ void raices::metodo_secante()
     x_mas_uno = x_i - (expresion(funcion, x_i) * (x_menos_uno - x_i)) / (expresion(funcion, x_menos_uno) - expresion(funcion, x_i));
     x_menos_uno = x_i;
     x_i = x_mas_uno;
+    cout << "x_i: " << x_i << "\tx_i+1: " << x_mas_uno << "\tError: " << abs(x_mas_uno - x_menos_uno) << endl;
   } while (abs(x_mas_uno - x_menos_uno) > error);
 
   cout << "La raiz es: " << x_mas_uno << endl;

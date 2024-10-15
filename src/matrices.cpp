@@ -4,509 +4,255 @@
 #include "../include/matrices.h"
 using namespace std;
 
-matrices::matrices()
+matrices::matrices(int n)
 {
-  filas = 0;
-  columnas = 0;
-  M = vector<vector<double>>(filas, vector<double>(columnas));
+  this->n = n;
+  matriz.resize(n, vector<double>(n, 0));
+  resultados.resize(n, 0);
 }
 
-void matrices::setFilas(int f)
+matrices::~matrices()
 {
-  filas = f;
-}
-
-int matrices::getFilas()
-{
-  return filas;
-}
-
-void matrices::setColumnas(int c)
-{
-  columnas = c;
-}
-
-int matrices::getColumnas()
-{
-  return columnas;
-}
-
-void matrices::setMatriz(vector<vector<double>> m)
-{
-  M = vector<vector<double>>(filas, vector<double>(columnas));
-  M = m;
-}
-
-vector<vector<double>> matrices::getMatriz()
-{
-  return M;
-}
-
-void matrices::setDato(int f, int c, double d)
-{
-  M[f][c] = d;
-}
-
-double matrices::getDato(int f, int c)
-{
-  return M[f][c];
 }
 
 void matrices::cargarMatriz()
 {
-  M = vector<vector<double>>(filas, vector<double>(columnas));
-  for (int i = 0; i < M.size(); i++)
+  for (int i = 0; i < n; i++)
   {
-    for (int j = 0; j < M[i].size(); j++)
+    for (int j = 0; j <= n; j++)
     {
-      cout << "Ingrese el valor de la posicion [" << i + 1 << "][" << j + 1 << "]: ";
-      cin >> M[i][j];
-    }
-  }
-}
-
-void matrices::copiarMatriz(matrices &m)
-{
-  filas = m.getFilas();
-  columnas = m.getColumnas();
-  M = m.getMatriz();
-}
-
-vector<double> matrices::getResultados()
-{
-  return resultados;
-}
-
-void matrices::intercambiar_filas(int fila1, int fila2)
-{
-  vector<double> aux = M[fila1];
-  M[fila1] = M[fila2];
-  M[fila2] = aux;
-}
-
-void matrices::multiplicar_fila(int fila, double escalar)
-{
-  for (int i = 0; i < M[fila].size(); i++)
-  {
-    M[fila][i] *= escalar;
-  }
-}
-
-void matrices::sumar_filas(int fila1, int fila2, double escalar)
-{
-  for (int i = 0; i < M[fila1].size(); i++)
-  {
-    M[fila1][i] += M[fila2][i] * escalar;
-  }
-}
-
-void matrices::triangulacion_superior()
-{
-  const double epsilon = 1e-10;
-
-  for (size_t iteraciones = 0; iteraciones < 100; iteraciones++)
-  {
-    for (int i = 0; i < filas; i++)
-    {
-      for (int j = 0; j < columnas; j++)
+      if (j < n)
       {
-
-        if (i > j)
-        {
-          if (abs(M[i][j]) >= epsilon)
-          {
-            sumar_filas(i, j, -(M[i][j] / M[j][j]));
-          }
-        }
+        cout << "Ingrese el valor de la posicion [" << i + 1 << "][" << j + 1 << "]: ";
+        cin >> matriz[i][j];
+      }
+      else
+      {
+        cout << "Ingrese el valor del resultado de la ecuacion " << i + 1 << ": ";
+        cin >> resultados[i];
       }
     }
   }
-}
-
-void matrices::triangulacion_inferior()
-{
-  const double epsilon = 1e-10;
-
-  for (size_t iteraciones = 0; iteraciones < 100; iteraciones++)
-  {
-    for (int i = 0; i < filas; i++)
-    {
-      for (int j = 0; j < columnas; j++)
-      {
-
-        if (i < j)
-        {
-          if (abs(M[i][j]) >= epsilon)
-          {
-            sumar_filas(i, j, -(M[i][j] / M[j][j]));
-          }
-        }
-      }
-    }
-  }
-}
-
-void matrices::sustitucion_regresiva()
-{
-  resultados = vector<double>(filas);
-
-  for (int i = filas - 1; i >= 0; i--)
-  {
-    double suma = 0;
-    for (int j = columnas - 2; j > i; j--)
-    {
-      suma += M[i][j] * resultados[j];
-    }
-    resultados[i] = (M[i][columnas - 1] - suma) / M[i][i];
-  }
-}
-
-void matrices::sustitucion_progresiva()
-{
-  resultados = vector<double>(filas, 1);
-
-  for (int i = 0; i < filas; i++)
-  {
-    double suma = 0;
-    for (int j = 0; j < i; j++)
-    {
-      suma += M[i][j] * resultados[j];
-    }
-    resultados[i] = (M[i][columnas - 1] - suma) / M[i][i];
-  }
-}
-
-void matrices::eliminacion_gaussiana()
-{
-  triangulacion_superior();
-  sustitucion_regresiva();
 }
 
 void matrices::mostrarMatriz()
 {
-  for (int i = 0; i < M.size(); i++)
+  for (int i = 0; i < n; i++)
   {
-    for (int j = 0; j < M[i].size(); j++)
+    for (int j = 0; j < n; j++)
     {
-      cout << M[i][j] << "\t";
+      cout << matriz[i][j] << "\t";
     }
-    cout << endl;
+    cout << "| " << resultados[i] << endl;
   }
 }
 
 void matrices::mostrarResultados()
 {
-  for (int i = 0; i < resultados.size(); i++)
+  for (int i = 0; i < n; i++)
   {
-    cout << "X" << i + 1 << " = " << resultados[i] << endl;
+    cout << "x" << i + 1 << ": " << resultados[i] << endl;
   }
+}
+
+void matrices::multiplicarFilaPorEscalar(int fila, double escalar)
+{
+  for (int i = 0; i < n; i++)
+  {
+    matriz[fila][i] *= escalar;
+  }
+}
+
+void matrices::sumarFilas(int fila1, int fila2, double escalar)
+{
+  for (int i = 0; i < n; i++)
+  {
+    matriz[fila2][i] += matriz[fila1][i] * escalar;
+  }
+}
+
+void matrices::intercambiarFilas(int fila1, int fila2)
+{
+  for (int i = 0; i < n; i++)
+  {
+    swap(matriz[fila1][i], matriz[fila2][i]);
+  }
+}
+
+void matrices::eliminacion_gaussiana()
+{
+  double factor;
+  for (int i = 0; i < n; i++)
+  {
+    // Check for zero pivot element
+    if (matriz[i][i] == 0)
+    {
+      cout << "elemento pivote es cero " << i << std::endl;
+      return;
+    }
+
+    for (int j = i + 1; j < n; j++)
+    {
+      factor = matriz[j][i] / matriz[i][i];
+      // elimina elementos bajo el pivote
+      for (int k = i; k < n; k++)
+      {
+        matriz[j][k] -= factor * matriz[i][k];
+      }
+      resultados[j] -= factor * resultados[i];
+    }
+  }
+  cout << "Matriz triangular superior" << endl;
+  mostrarMatriz();
+  // sustitucion hacia atras
+  for (int i = n - 1; i >= 0; i--)
+  {
+    for (int j = i + 1; j < n; j++)
+    {
+      resultados[i] -= matriz[i][j] * resultados[j];
+    }
+    resultados[i] /= matriz[i][i];
+  }
+  cout << "\n matriz final " << endl;
+  mostrarMatriz();
 }
 
 void matrices::gauss_seidel()
 {
-  double error = 1e-7;
-  double suma;
-  vector<double> x, x_ant;
-  x = vector<double>(filas, 0);
-  x_ant = vector<double>(filas, 0);
-
-  if (!VerificarDiagonalmenteDominante())
-  {
-    hacerDiagonalmenteDominante();
-  }
+  double error, suma;
+  vector<double> x(n, 0);
+  vector<double> x_ant(n, 0);
+  bool error_flag = false;
+  cout << "Ingrese el error: ";
+  cin >> error;
 
   do
   {
-    for (int i = 0; i < filas; i++)
+    error_flag = false;
+    for (int i = 0; i < n; i++)
     {
       suma = 0;
-      for (int j = 0; j < columnas - 1; j++)
+      for (int j = 0; j < n; j++)
       {
         if (j != i)
         {
-          suma += M[i][j] * x[j];
+          suma += matriz[i][j] * x[j];
         }
       }
-      x_ant[i] = x[i];
-      x[i] = (M[i][columnas - 1] - suma) / M[i][i];
+      x[i] = (resultados[i] - suma) / matriz[i][i];
     }
-  } while (calculo_error(x, x_ant, error));
-
-  resultados = x;
-}
-
-bool matrices::calculo_error(vector<double> x, vector<double> x_ant, double error)
-{
-  for (int i = 0; i < x.size(); i++)
-  {
-    if (abs(x[i] - x_ant[i]) > error)
+    for (int i = 0; i < n; i++)
     {
-      return true;
+      cout << "x" << i + 1 << ": " << x[i] << endl;
     }
-  }
-  return false;
+    cout << endl;
+    for (int i = 0; i < n; i++)
+    {
+      if (abs(x[i] - x_ant[i]) > error)
+      {
+        error_flag = true;
+        break;
+      }
+    }
+
+    // Debug print statements
+    cout << "Iteration complete. error_flag: " << error_flag << endl;
+    for (int i = 0; i < n; i++)
+    {
+      cout << "x[" << i << "]: " << x[i] << ", x_ant[" << i << "]: " << x_ant[i] << ", abs(x[i] - x_ant[i]): " << abs(x[i] - x_ant[i]) << endl;
+    }
+    cout << "------------------------" << endl;
+    x_ant = x;
+
+  } while (error_flag);
 }
 
 void matrices::metodo_de_LU()
 {
-  vector<vector<double>> L, U;
-  vector<double> x, y;
-  L = vector<vector<double>>(filas, vector<double>(columnas, 0));
-  U = vector<vector<double>>(filas, vector<double>(columnas, 0));
-  x = vector<double>(filas, 0);
-  y = vector<double>(filas, 0);
-
-  for (int i = 0; i < filas; i++)
+  vector<vector<double>> L(n, vector<double>(n, 0));
+  vector<vector<double>> U(n, vector<double>(n, 0));
+  double suma;
+  // descomposicion LU
+  for (int i = 0; i < n; i++)
   {
-    L[i][i] = 1;
-  }
-
-  for (int i = 0; i < filas; i++)
-  {
-    for (int j = 0; j < columnas; j++)
+    for (int j = i; j < n; j++)
     {
-      double suma = 0;
-
+      suma = 0;
       for (int k = 0; k < i; k++)
       {
         suma += L[i][k] * U[k][j];
       }
+      U[i][j] = matriz[i][j] - suma;
     }
-
-    for (int j = i; j < columnas; j++)
+    for (int j = i; j < n; j++)
     {
-      double suma = 0;
-
-      for (int k = 0; k < i; k++)
+      if (i == j)
       {
-        suma += L[i][k] * U[k][j];
+        L[i][i] = 1;
       }
-
-      U[i][j] = M[i][j] - suma;
-    }
-
-    for (int j = i + 1; j < filas; j++)
-    {
-      double suma = 0;
-
-      for (int k = 0; k < i; k++)
+      else
       {
-        suma += L[j][k] * U[k][i];
+        suma = 0;
+        for (int k = 0; k < i; k++)
+        {
+          suma += L[j][k] * U[k][i];
+        }
+        L[j][i] = (matriz[j][i] - suma) / U[i][i];
       }
-
-      L[j][i] = (M[j][i] - suma) / U[i][i];
     }
   }
-
-  for (int i = 0; i < filas; i++)
+  cout << "Matriz L" << endl;
+  for (int i = 0; i < n; i++)
   {
-    double suma = 0;
-
+    for (int j = 0; j < n; j++)
+    {
+      cout << L[i][j] << "\t";
+    }
+    cout << endl;
+  }
+  cout << "Matriz U" << endl;
+  for (int i = 0; i < n; i++)
+  {
+    for (int j = 0; j < n; j++)
+    {
+      cout << U[i][j] << "\t";
+    }
+    cout << endl;
+  }
+  // sustitucion hacia adelante
+  vector<double> y(n, 0);
+  for (int i = 0; i < n; i++)
+  {
+    suma = 0;
     for (int j = 0; j < i; j++)
     {
       suma += L[i][j] * y[j];
     }
-
-    y[i] = (M[i][columnas - 1] - suma) / L[i][i];
+    y[i] = (resultados[i] - suma) / L[i][i];
   }
-
-  for (int i = filas - 1; i >= 0; i--)
+  cout << "Matriz Y" << endl;
+  for (int i = 0; i < n; i++)
   {
-    double suma = 0;
+    cout << y[i] << "\t";
+  }
+  cout << "\n";
 
-    for (int j = columnas - 2; j > i; j--)
+  // sustitucion hacia atras
+  vector<double> x(n, 0);
+
+  for (int i = n - 1; i >= 0; i--)
+  {
+    suma = 0;
+    for (int j = i + 1; j < n; j++)
     {
       suma += U[i][j] * x[j];
     }
-
     x[i] = (y[i] - suma) / U[i][i];
   }
 
-  resultados = x;
-}
-
-vector<vector<double>> matrices::CalcularInversa()
-{
-  vector<vector<double>> inversa;
-
-  inversa = vector<vector<double>>(filas, vector<double>(columnas, 0));
-
-  for (int i = 0; i < filas; i++)
+  cout << "Resultados: " << endl;
+  for (int i = 0; i < n; i++)
   {
-    for (int j = 0; j < columnas; j++)
-    {
-      if (i == j)
-      {
-        inversa[i][j] = 1;
-      }
-    }
+    cout << "x" << i + 1 << ": " << x[i] << endl;
   }
-
-  for (int i = 0; i < filas; i++)
-  {
-    double pivote = M[i][i];
-    for (int j = 0; j < columnas; j++)
-    {
-      M[i][j] /= pivote;
-      inversa[i][j] /= pivote;
-    }
-
-    for (int j = 0; j < filas; j++)
-    {
-      if (i != j)
-      {
-        double factor = M[j][i];
-        for (int k = 0; k < columnas; k++)
-        {
-          M[j][k] -= factor * M[i][k];
-          inversa[j][k] -= factor * inversa[i][k];
-        }
-      }
-    }
-  }
-  cout << "inversa de la matriz" << endl;
-  for (int i = 0; i < filas; i++)
-  {
-    for (size_t j = 0; j < columnas; j++)
-    {
-      cout << inversa[i][j] << "\t";
-    }
-    cout << endl;
-  }
-  cout << endl;
-
-  return inversa;
-}
-
-double matrices::normadeMatriz(vector<vector<double>> m)
-{
-  double norma = 0;
-  for (size_t i = 0; i < filas; i++)
-  {
-    double suma = 0;
-    for (size_t j = 0; j < columnas - 1; j++)
-    {
-      suma += abs(m[i][j]);
-    }
-    if (suma > norma)
-    {
-      norma = suma;
-    }
-  }
-  return norma;
-}
-
-void matrices::CondicionDeLaMatriz()
-{
-  double error = 1e-7;
-  int t, p;
-  vector<vector<double>> inversa;
-  inversa = CalcularInversa();
-  double normaA = normadeMatriz(M);
-  double normaAInversa = normadeMatriz(inversa);
-  p = normaA * normaAInversa;
-  p = (obtenerExponente(p));
-  cout << "La norma de la matriz A es: " << normaA << endl;
-  cout << "La norma de la matriz A inversa es: " << normaAInversa << endl;
-  cout << "El numero de condicion de la matriz es: " << p << endl;
-  t = (obtenerExponente(error) * -1) + 1;
-  cout << "el numero de cifras significativas es: " << t - p << endl;
-}
-
-void matrices::ChequarSolucion(vector<double> x)
-{
-  double error = 1e-7;
-  vector<double> b;
-  bool correcto = true;
-
-  b = vector<double>(filas, 0);
-  for (int i = 0; i < filas; i++)
-  {
-    for (int j = 0; j < columnas - 1; j++)
-    {
-      b[i] += M[i][j] * x[j];
-    }
-  }
-
-  for (int i = 0; i < filas; i++)
-  {
-    if (abs(b[i] - M[i][columnas - 1]) > error)
-    {
-      correcto = false;
-      break;
-    }
-  }
-
-  if (correcto)
-  {
-    cout << "La solucion es correcta" << endl;
-  }
-  else
-  {
-    cout << "La solucion no es correcta" << endl;
-  }
-}
-
-bool matrices::VerificarDiagonalmenteDominante()
-{
-  double suma;
-  bool correcto = true;
-
-  for (int i = 0; i < filas; i++)
-  {
-    suma = 0;
-    for (int j = 0; j < columnas - 1; j++)
-    {
-      if (i != j)
-      {
-        suma += abs(M[i][j]);
-      }
-    }
-    if (abs(M[i][i]) <= suma)
-    {
-      correcto = false;
-      break;
-    }
-  }
-
-  return correcto;
-}
-
-void matrices::hacerDiagonalmenteDominante()
-{
-  double mayor;
-  int fila_mayor, vuelta = 0;
-
-  while (vuelta < 100)
-  {
-    for (int i = 0; i < filas; i++)
-    {
-      mayor = abs(M[i][i]);
-      fila_mayor = i;
-      for (int j = i + 1; j < filas; j++)
-      {
-        if (abs(M[j][i]) > mayor)
-        {
-          mayor = abs(M[j][i]);
-          fila_mayor = j;
-        }
-      }
-      if (fila_mayor != i)
-      {
-        intercambiar_filas(i, fila_mayor);
-      }
-    }
-  }
-  vuelta++;
-}
-
-int matrices::obtenerExponente(double numero)
-{
-  if (numero == 0)
-    return 0;
-  return static_cast<int>(floor(log10(abs(numero))));
-}
-
-matrices::~matrices()
-{
 }

@@ -45,48 +45,40 @@ void menu_raices()
 
 void menu_matrices()
 {
-  int opcion, filas, columnas;
-  matrices matriz, matriz_aux;
-  cout << "Ingrese el numero de filas: ";
-  cin >> filas;
-  cout << "Ingrese el numero de columnas: ";
-  cin >> columnas;
-  matriz.setFilas(filas);
-  matriz.setColumnas(columnas);
-  matriz.cargarMatriz();
-  matriz.mostrarMatriz();
-
+  int opcion, n;
+  cout << "Ingrese el la cantidad de filas de la matriz: ";
+  cin >> n;
+  matrices m(n), m2(n);
   do
   {
-    matriz_aux.copiarMatriz(matriz);
     cout << "Ingrese una opcion: " << endl;
-    cout << "1. Metodo de eliminacion gaussiana" << endl;
-    cout << "2. Metodo de Gauss-Seidel" << endl;
-    cout << "3. Metodo de LU" << endl;
-    cout << "4. Estabilidad de la matriz" << endl;
+    cout << "1. Cargar matriz" << endl;
+    cout << "2. Mostrar matriz" << endl;
+    cout << "3. Eliminacion gaussiana" << endl;
+    cout << "4. Gauss-Seidel" << endl;
+    cout << "5. Metodo de LU" << endl;
+    cout << "6. Condicion de la matriz" << endl;
     cout << "0. Salir" << endl;
     cin >> opcion;
     switch (opcion)
     {
     case 1:
-      matriz_aux.eliminacion_gaussiana();
-      matriz_aux.mostrarMatriz();
-      matriz_aux.mostrarResultados();
-      matriz.ChequarSolucion(matriz_aux.getResultados());
+      m.cargarMatriz();
       break;
     case 2:
-      matriz_aux.gauss_seidel();
-      matriz_aux.mostrarResultados();
-      matriz.ChequarSolucion(matriz_aux.getResultados());
-
+      m.mostrarMatriz();
       break;
     case 3:
-      matriz_aux.metodo_de_LU();
-      matriz_aux.mostrarResultados();
-      matriz.ChequarSolucion(matriz_aux.getResultados());
+      m.eliminacion_gaussiana();
       break;
     case 4:
-      matriz_aux.CondicionDeLaMatriz();
+      m.gauss_seidel();
+      break;
+    case 5:
+      m.metodo_de_LU();
+      break;
+    case 6:
+      // m.CondicionDeLaMatriz();
       break;
     default:
       break;

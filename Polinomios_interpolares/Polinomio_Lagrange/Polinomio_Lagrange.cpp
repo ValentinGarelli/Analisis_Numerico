@@ -31,8 +31,8 @@ double polinomioLagrange(const vector<double> &x, const vector<double> &y, doubl
 int main()
 {
   // Vectores x e y
-  vector<double> x = {0, 1, 2, 3};
-  vector<double> y = {1, 2.7182, 7.3891, 20.0855};
+  vector<double> x = {-1, 0, 1, 2};
+  vector<double> y = {2, -0.7183, 0, 0.8964};
 
   // Calcular e imprimir todos los polinomios base de Lagrange
   cout << "Polinomios base de Lagrange:" << endl;
@@ -69,9 +69,18 @@ int main()
   cout << endl;
 
   // Evaluación del polinomio de Lagrange en un punto específico
-  double x_val = 2.5;
+  double x_val = -1.5342;
   double resultado = polinomioLagrange(x, y, x_val);
   cout << "\nP(" << x_val << ") = " << resultado << endl;
+  x_val = -0, 5732;
+  resultado = polinomioLagrange(x, y, x_val);
+  cout << "P(" << x_val << ") = " << resultado << endl;
+  x_val = 1.5;
+  resultado = polinomioLagrange(x, y, x_val);
+  cout << "P(" << x_val << ") = " << resultado << endl;
+  x_val = 1.5674;
+  resultado = polinomioLagrange(x, y, x_val);
+  cout << "P(" << x_val << ") = " << resultado << endl;
 
   return 0;
 }
